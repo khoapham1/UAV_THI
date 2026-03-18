@@ -10,6 +10,10 @@ from pathlib import Path
 
 import cv2
 import numpy as np
+import csv
+import matplotlib
+matplotlib.use("Agg")
+import matplotlib.pyplot as plt
 from dronekit import connect, VehicleMode
 from pymavlink import mavutil
 
@@ -94,7 +98,7 @@ FRAME_TIME = 1.0 / TARGET_FPS  # ~0.033s (33ms)
 # CONFIG FOR MODEL
 VERBOSE = False
 NORMALIZE = False
-CONFIDENCE_THRESHOLD = 0.5
+CONFIDENCE_THRESHOLD = 0.7
 NMS_IOU_THRESHOLD = 0.45
 CLASS_NAMES = {
     0: "blue",
@@ -113,8 +117,10 @@ log.info(f"[MODEL] HEF = {MODEL_PATH}")
 # =========================
 # PID controllers
 # =========================
-PID_X = PIDController(0.00123, 0.0, 0.00038, max_output=0.3, integral_limit=300)
-PID_Y = PIDController(0.000555, 0.0, 0.00036, max_output=0.3, integral_limit=300)
+#trai/phai
+PID_X = PIDController(0.0015, 0.0000008, 0.00032, max_output=0.115, integral_limit=300)
+#tien/lui
+PID_Y = PIDController(0.0013489, 0.0000008, 0.00045, max_output=0.115, integral_limit=300)
 
 
 # =========================
@@ -619,6 +625,12 @@ class DroneController:
         self._record_fps = 30.0
         self._record_dir = os.path.join(os.path.dirname(__file__), "records")
         os.makedirs(self._record_dir, exist_ok=True)
+        self._pid_dir = os.path.join(self._record_dir, "pid_logs")
+        os.makedirs(self._pid_dir, exist_ok=True)
+
+        self._pid_log = []
+        self._pid_log_lock = threading.Lock()
+        self._pid_run_ts = time.strftime("%Y%m%d_%H%M%S")
 
         # RED1/RED2 tracking (NO PROMOTE)
         self.prev_red1 = None
@@ -1028,6 +1040,100 @@ class DroneController:
         self._recording = False
         log.info("[REC] STOP")
 
+    def _append_pid_sample(self, phase, target, ex, ey, vx, vy):
+        try:
+            sample = {
+                "t": time.time(),
+                "phase": str(phase),
+                "target": str(target),
+                "ex": float(ex),
+                "ey": float(ey),
+                "vx": float(vx),
+                "vy": float(vy),
+            }
+            with self._pid_log_lock:
+                self._pid_log.append(sample)
+        except Exception as e:
+            log.debug(f"[PID_LOG] append failed: {e}")
+
+    def _export_pid_plots(self):
+        with self._pid_log_lock:
+            rows = list(self._pid_log)
+
+        if not rows:
+            log.info("[PID_PLOT] no PID samples -> skip export")
+            return None, None
+
+        t0 = rows[0]["t"]
+        ts = self._pid_run_ts
+        csv_path = os.path.join(self._pid_dir, f"pid_trace_{ts}.csv")
+        png_path = os.path.join(self._pid_dir, f"pid_plot_{ts}.png")
+
+        try:
+            with open(csv_path, "w", newline="", encoding="utf-8") as f:
+                writer = csv.writer(f)
+                writer.writerow(["t_rel_s", "phase", "target", "ex", "ey", "vx", "vy"])
+                for r in rows:
+                    writer.writerow([
+                        f"{r['t'] - t0:.3f}",
+                        r["phase"],
+                        r["target"],
+                        f"{r['ex']:.6f}",
+                        f"{r['ey']:.6f}",
+                        f"{r['vx']:.6f}",
+                        f"{r['vy']:.6f}",
+                    ])
+        except Exception as e:
+            log.error(f"[PID_PLOT] CSV export failed: {e}")
+            csv_path = None
+
+        try:
+            t = [r["t"] - t0 for r in rows]
+            ex = [r["ex"] for r in rows]
+            ey = [r["ey"] for r in rows]
+            vx = [r["vx"] for r in rows]
+            vy = [r["vy"] for r in rows]
+
+            fig, axes = plt.subplots(2, 1, figsize=(14, 8), sharex=True)
+
+            axes[0].plot(t, ex, label="ex (px)")
+            axes[0].plot(t, ey, label="ey (px)")
+            axes[0].axhline(0.0, linewidth=1.0, linestyle="--")
+            axes[0].set_ylabel("Pixel error")
+            axes[0].set_title("PID error trace")
+            axes[0].grid(True, alpha=0.3)
+            axes[0].legend()
+
+            axes[1].plot(t, vx, label="vx (m/s)")
+            axes[1].plot(t, vy, label="vy (m/s)")
+            axes[1].axhline(0.0, linewidth=1.0, linestyle="--")
+            axes[1].set_xlabel("Time (s)")
+            axes[1].set_ylabel("Velocity")
+            axes[1].set_title("PID output trace")
+            axes[1].grid(True, alpha=0.3)
+            axes[1].legend()
+
+            # Mark phase changes for easier reading
+            prev_key = None
+            for r in rows:
+                key = (r["phase"], r["target"])
+                if key != prev_key:
+                    x = r["t"] - t0
+                    for ax in axes:
+                        ax.axvline(x, linewidth=0.8, linestyle=":", alpha=0.5)
+                    axes[0].text(x, axes[0].get_ylim()[1], f"{r['phase']}:{r['target']}", fontsize=8, rotation=90, va="top", ha="right")
+                    prev_key = key
+
+            fig.tight_layout()
+            fig.savefig(png_path, dpi=160, bbox_inches="tight")
+            plt.close(fig)
+            log.info(f"[PID_PLOT] saved plot -> {png_path}")
+        except Exception as e:
+            log.error(f"[PID_PLOT] PNG export failed: {e}")
+            png_path = None
+
+        return csv_path, png_path
+
     # ---------- Movement helpers ----------
     def _direction_to_vxvy(self, direction: str, speed: float):
         d = (direction or "").lower()
@@ -1120,6 +1226,8 @@ class DroneController:
         if abs(ex_f) <= float(tol_px) and abs(ey_f) <= float(tol_px):
             vx = 0.0
             vy = 0.0
+
+        self._append_pid_sample("land_h", "H_MARKER", ex_f, ey_f, vx, vy)
 
         if send_now:
             self.send_local_ned_velocity(vx, vy, float(vz))
@@ -1229,6 +1337,7 @@ class DroneController:
             if abs(ex_f) <= float(tol_px) and abs(ey_f) <= float(tol_px):
                 vx, vy = 0.0, 0.0
 
+            self._append_pid_sample("seek", tagU, ex_f, ey_f, vx, vy)
             self.send_local_ned_velocity(vx, vy, 0.0)
             return ex_f, ey_f, vx, vy
         
@@ -1620,7 +1729,7 @@ class DroneController:
     # ---------- Mission ----------
     def mission_complete(self):
         try:
-            self.arm_and_takeoff(self.takeoff_height)
+            # self.arm_and_takeoff(self.takeoff_height)
             log.info("[Mission Started]")
             self.mission_step = 1
 
@@ -1629,7 +1738,7 @@ class DroneController:
                     log.info("[Step 1] FORWARD -> RED1 enter bbox then hold 5s")
                     # ok = self.move_with_timer("forward", 2.5, 1.0)
 
-                    ok = self.seek_target_and_center("RED1", "forward", 1.0, hold_s=5.0, timeout_s=30.0, duration_s= 4)
+                    ok = self.seek_target_and_center("RED1", "forward", 0.7, hold_s=8.0, timeout_s=30.0, duration_s= 10)
                     if not ok:
                         break
                     self.mission_step = 6
@@ -1674,15 +1783,16 @@ class DroneController:
 
                 elif self.mission_step == 7:
                     log.info("[Step 7] LAND on H (visual-servo)")
-                    res = self.land_to_h(timeout_s=90)
-                    if not res.ok:
-                        log.error(f"[H-LAND] failed: {res.reason} -> fallback LAND")
-                        try:
-                            self.vehicle.mode = VehicleMode("LAND")
-                        except Exception:
-                            pass
-                    else:
-                        log.info(f"[H-LAND] ok: {res.reason}")
+                    self.vehicle.mode = VehicleMode("LAND")
+                    # res = self.land_to_h(timeout_s=90)
+                    # if not res.ok:
+                    #     log.error(f"[H-LAND] failed: {res.reason} -> fallback LAND")
+                    #     try:
+                    #         self.vehicle.mode = VehicleMode("LAND")
+                    #     except Exception:
+                    #         pass
+                    # else:
+                    #     log.info(f"[H-LAND] ok: {res.reason}")
                     self.mission_step = 8
 
                 elif self.mission_step == 8:
@@ -1730,7 +1840,7 @@ class DroneController:
         while not self._stop_flag:
             alt = self.vehicle.location.global_relative_frame.alt
             log.info(f" Altitude: {alt:.1f} m")
-            if alt >= targetHeight * 0.95:
+            if alt >= targetHeight * 0.9:
                 break
             time.sleep(1)
 
@@ -1765,6 +1875,11 @@ class DroneController:
                 self._stop_recording()
         except Exception:
             pass
+
+        try:
+            self._export_pid_plots()
+        except Exception as e:
+            log.error(f"[PID_PLOT] shutdown export failed: {e}")
 
         try:
             self.camera.stop()

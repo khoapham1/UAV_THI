@@ -2,6 +2,32 @@ import time
 import numpy as np
 
 
+class LowPassFilter:
+    def __init__(self, alpha=0.25, init_value=0.0):
+        """
+        alpha in (0,1]:
+            - alpha nhỏ  -> lọc mạnh hơn, mượt hơn, nhưng trễ hơn
+            - alpha lớn  -> bám nhanh hơn, nhưng lọc ít hơn
+        """
+        self.alpha = float(np.clip(alpha, 1e-6, 1.0))
+        self.init_value = float(init_value)
+        self.reset()
+
+    def reset(self, value=None):
+        self.initialized = False
+        self.last_value = self.init_value if value is None else float(value)
+
+    def update(self, value):
+        value = float(value)
+        if not self.initialized:
+            self.last_value = value
+            self.initialized = True
+            return self.last_value
+
+        self.last_value = self.alpha * value + (1.0 - self.alpha) * self.last_value
+        return self.last_value
+
+
 class PIDController:
     def __init__(self, Kp, Ki, Kd, max_output, integral_limit=None):
         """

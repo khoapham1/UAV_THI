@@ -7,6 +7,7 @@ import warnings
 import logging
 from dataclasses import dataclass
 from pathlib import Path
+import inspect
 
 import cv2
 import numpy as np
@@ -17,7 +18,7 @@ import matplotlib.pyplot as plt
 from dronekit import connect, VehicleMode
 from pymavlink import mavutil
 
-from PID_control import PIDController
+from PID_control import PIDController, LowPassFilter
 from CenterTracker import CircleMemoryTracker  # kept for compatibility (optional usage)
 from common import (
     HailoPythonInferenceEngine, DetectionPostProcessor,
@@ -122,6 +123,14 @@ PID_X = PIDController(0.0015, 0.0000008, 0.00032, max_output=0.115, integral_lim
 #tien/lui
 PID_Y = PIDController(0.0013489, 0.0000008, 0.00045, max_output=0.115, integral_limit=300)
 
+# =========================
+# Low-pass filters for pixel error (ex, ey)
+# ex_raw, ey_raw -> LPF -> PID_X, PID_Y
+# alpha nhỏ hơn => lọc mạnh hơn, giảm overshoot tốt hơn nhưng phản ứng chậm hơn
+# alpha lớn hơn => bám nhanh hơn nhưng lọc ít hơn
+LPF_ALPHA_X = 0.22
+LPF_ALPHA_Y = 0.22
+
 
 # =========================
 # Camera stream (threaded)
@@ -222,39 +231,22 @@ class HailoHEFDetector:
         log.info(f"[HAILO] detector ready: {self.hef_path}")
 
     def _build_engine(self):
-        last_err = None
-        ctor_attempts = [
-            ((self.hef_path,), {}),
-            ((), {"hef_path": self.hef_path}),
-            ((), {"model_path": self.hef_path}),
-            ((), {"hef": self.hef_path}),
-            ((), {"model": self.hef_path}),
-            ((), {}),
-        ]
-
-        for args, kwargs in ctor_attempts:
-            try:
-                engine = HailoPythonInferenceEngine(*args, **kwargs)
-
-                for load_name in ("load_model", "load_hef", "initialize", "init_model"):
-                    if hasattr(engine, load_name):
-                        loader = getattr(engine, load_name)
-                        try:
-                            loader(self.hef_path)
-                            break
-                        except TypeError:
-                            try:
-                                loader()
-                                break
-                            except Exception:
-                                pass
-                        except Exception:
-                            pass
-                return engine
-            except Exception as e:
-                last_err = e
-
-        raise RuntimeError(f"Cannot initialize HailoPythonInferenceEngine: {last_err}")
+        try:
+            sig = inspect.signature(HailoPythonInferenceEngine)
+            if "hef_path" in sig.parameters:
+                return HailoPythonInferenceEngine(hef_path=self.hef_path)
+            return HailoPythonInferenceEngine(self.hef_path)
+        except Exception as e:
+            msg = str(e)
+            if (
+                "HAILO_OUT_OF_PHYSICAL_DEVICES" in msg
+                or "not enough free devices" in msg.lower()
+                or "Failed to create vdevice" in msg
+            ):
+                raise RuntimeError(
+                    "Hailo device is busy or not detected. Close other Hailo processes before running this script."
+                ) from e
+            raise RuntimeError(f"Cannot initialize HailoPythonInferenceEngine: {e}") from e
 
     def _build_postprocessor(self):
         attempts = [
@@ -393,22 +385,28 @@ class HailoHEFDetector:
     def _scale_one_box(self, box, orig_w, orig_h, scale, pad_w, pad_h):
         try:
             scaled = scale_detections_to_original(
-                [{"bbox": tuple(map(float, box)), "conf": 1.0, "cls": 0}],
-                (orig_h, orig_w),
+                [{
+                    "x1": float(box[0]),
+                    "y1": float(box[1]),
+                    "x2": float(box[2]),
+                    "y2": float(box[3]),
+                    "conf": 1.0,
+                    "cls_id": 0,
+                }],
+                orig_h,
+                orig_w,
                 scale,
                 pad_w,
                 pad_h,
             )
             if scaled and isinstance(scaled, (list, tuple)) and isinstance(scaled[0], dict):
-                sb = scaled[0].get("bbox")
-                if sb is not None and len(sb) >= 4:
-                    x1, y1, x2, y2 = sb[:4]
-                    x1 = int(max(0, min(orig_w - 1, round(x1))))
-                    y1 = int(max(0, min(orig_h - 1, round(y1))))
-                    x2 = int(max(0, min(orig_w - 1, round(x2))))
-                    y2 = int(max(0, min(orig_h - 1, round(y2))))
-                    if x2 > x1 and y2 > y1:
-                        return x1, y1, x2, y2
+                sb = scaled[0]
+                x1 = int(max(0, min(orig_w - 1, round(sb["x1"]))))
+                y1 = int(max(0, min(orig_h - 1, round(sb["y1"]))))
+                x2 = int(max(0, min(orig_w - 1, round(sb["x2"]))))
+                y2 = int(max(0, min(orig_h - 1, round(sb["y2"]))))
+                if x2 > x1 and y2 > y1:
+                    return x1, y1, x2, y2
         except Exception:
             pass
 
@@ -542,13 +540,15 @@ class DroneController:
         connection_str="/dev/ttyACM0",
         takeoff_height=4.5,
         cam_index=0,
+        enable_vehicle=True,
         enable_mission=False,
     ):
         self._stop_flag = False
 
         self.connection_str = connection_str
         self.takeoff_height = float(takeoff_height)
-
+        self.enable_vehicle = bool(enable_vehicle)
+        self.enable_mission = bool(enable_mission)
 
         # UI hold status
         self._ui_lock = threading.Lock()
@@ -557,8 +557,12 @@ class DroneController:
         self._ui_hold_elapsed = 0.0
         self._ui_hold_required = 0.0
 
-        log.info(f"[Connecting to vehicle on]: {self.connection_str}")
-        self.vehicle = connect(self.connection_str, wait_ready=True, timeout=60)
+        if self.enable_vehicle:
+            log.info(f"[Connecting to vehicle on]: {self.connection_str}")
+            self.vehicle = connect(self.connection_str, wait_ready=True, timeout=60)
+        else:
+            log.info("[Vehicle] MockVehicle enabled -> skip DroneKit connect(), image-only mode")
+            self.vehicle = MockVehicle()
 
         # # Param set (best-effort)
         # try:
@@ -632,6 +636,10 @@ class DroneController:
         self._pid_log_lock = threading.Lock()
         self._pid_run_ts = time.strftime("%Y%m%d_%H%M%S")
 
+        # Low-pass filter state for pixel errors before PID
+        self.lpf_ex = LowPassFilter(alpha=LPF_ALPHA_X)
+        self.lpf_ey = LowPassFilter(alpha=LPF_ALPHA_Y)
+
         # RED1/RED2 tracking (NO PROMOTE)
         self.prev_red1 = None
         self.prev_red2 = None
@@ -652,17 +660,32 @@ class DroneController:
         self._det_thread = threading.Thread(target=self._det_loop, daemon=True)
         self._det_thread.start()
 
-        # self._mission_thread = None
-        self._mission_thread = threading.Thread(target=self.mission_complete, daemon=True)
-        self._mission_thread.start()
-        log.info("[Mission] Started Mission")
+        self._mission_thread = None
+        if self.enable_mission:
+            self._mission_thread = threading.Thread(target=self.mission_complete, daemon=True)
+            self._mission_thread.start()
+            log.info("[Mission] Started Mission")
+        else:
+            log.info("[Mission] Disabled at startup")
 
-        # if enable_mission:
-        #     self._mission_thread = threading.Thread(target=self.mission_complete, daemon=True)
-        #     self._mission_thread.start()
-        # else:
-        #     log.info("[Mission] Disabled at startup")
 
+    def _reset_error_filters(self, ex0=0.0, ey0=0.0):
+        try:
+            self.lpf_ex.reset(ex0)
+            self.lpf_ey.reset(ey0)
+        except Exception:
+            pass
+
+    def _filter_error(self, ex, ey):
+        try:
+            ex_f = float(self.lpf_ex.update(ex))
+        except Exception:
+            ex_f = float(ex)
+        try:
+            ey_f = float(self.lpf_ey.update(ey))
+        except Exception:
+            ey_f = float(ey)
+        return ex_f, ey_f
 
     # ---------- UI hold helpers ----------
     def _ui_set_hold(self, target, in_zone, elapsed, required):
@@ -1178,8 +1201,6 @@ class DroneController:
         ey_px: float,
         tol_px: int = 5,
         max_vxy: float = 0.30,
-        ema_alpha: float = 0.25,
-        ema_state: dict = None,
         send_now: bool = False,
         vz: float = 0.0,
     ):
@@ -1191,21 +1212,11 @@ class DroneController:
             vx: tiến/lùi
             vy: trái/phải
             vz: xuống khi vz > 0
+
+        Chuỗi xử lý:
+            ex_raw, ey_raw -> LowPassFilter -> PID_Y / PID_X -> vx, vy
         """
-        if ema_state is None:
-            ema_state = {}
-
-        if not ema_state.get("inited", False):
-            ex_f = float(ex_px)
-            ey_f = float(ey_px)
-            ema_state["inited"] = True
-        else:
-            a = float(ema_alpha)
-            ex_f = a * float(ex_px) + (1.0 - a) * float(ema_state.get("ex_f", 0.0))
-            ey_f = a * float(ey_px) + (1.0 - a) * float(ema_state.get("ey_f", 0.0))
-
-        ema_state["ex_f"] = ex_f
-        ema_state["ey_f"] = ey_f
+        ex_f, ey_f = self._filter_error(ex_px, ey_px)
 
         try:
             vx = float(PID_Y.update(-ey_f))
@@ -1220,7 +1231,7 @@ class DroneController:
         vx = float(np.clip(vx, -max_vxy, max_vxy))
         vy = float(np.clip(vy, -max_vxy, max_vxy))
 
-        log.info(f"[PID_CONTROL] target=H_MARKER ex={ex_f:.1f} ey={ey_f:.1f} vx={vx:.3f} vy={vy:.3f}")
+        log.info(f"[PID_CONTROL] target=H_MARKER ex_raw={float(ex_px):.1f} ey_raw={float(ey_px):.1f} ex_lpf={ex_f:.1f} ey_lpf={ey_f:.1f} vx={vx:.3f} vy={vy:.3f}")
 
         # deadband nhỏ để tránh rung
         if abs(ex_f) <= float(tol_px) and abs(ey_f) <= float(tol_px):
@@ -1233,6 +1244,7 @@ class DroneController:
             self.send_local_ned_velocity(vx, vy, float(vz))
 
         return ex_f, ey_f, vx, vy
+
     def seek_target_and_center(
         self,
         target_tag: str,
@@ -1258,6 +1270,7 @@ class DroneController:
         try:
             PID_X.reset()
             PID_Y.reset()
+            self._reset_error_filters()
         except Exception:
             pass
 
@@ -1272,18 +1285,13 @@ class DroneController:
             try:
                 PID_X.reset()
                 PID_Y.reset()
+                self._reset_error_filters()
             except Exception:
                 pass
 
         start_t = time.time()
         hold_start = None
         dt_sleep = 1.0 / float(max(1e-6, loop_hz))
-
-        # small smoothing to reduce jitter
-        ema_alpha = 0.25
-        ex_f = 0.0
-        ey_f = 0.0
-        ema_inited = False
 
         # speed policy
         max_v_seek = 0.30
@@ -1298,29 +1306,14 @@ class DroneController:
         duration_logged = False
 
         def pid_drive_to_center(ex_px: float, ey_px: float, max_vxy: float):
-            """Compute and send BODY_NED vx/vy from pixel errors using PID (same mapping as control_drone_to_center).
-            |------------------------|   |----------------------------|    |--------------------------|
-            |           Input        | ->|        PID                 | -> |    Output                |
-            |(ex_px, ey_px, max_vxy )|   |       vx, vy               |    |ex_px = 0, ey_px=0        |
-            |(Trái/phải),(Lên/xuống),|   |                            |    |tâm Frame trùng tâm circle|
-            |------------------------|   |----------------------------|    |--------------------------|
+            """Compute and send BODY_NED vx/vy from pixel errors using PID.
+            Chuỗi xử lý chuẩn mới:
+                ex_raw, ey_raw -> LowPassFilter -> PID_Y / PID_X -> vx, vy
             """
-            #Lọc nhiễu bằng EMA 
-            nonlocal ex_f, ey_f, ema_inited
-            if not ema_inited:
-                ex_f, ey_f = float(ex_px), float(ey_px)
-                ema_inited = True
-            else:
-                a = float(ema_alpha)
-                ex_f = a * float(ex_px) + (1.0 - a) * ex_f
-                ey_f = a * float(ey_px) + (1.0 - a) * ey_f
-
-            # mapping:
-            #   vx = PID_Y.update(-ey)
-            #   vy = PID_X.update(ex)
+            ex_f, ey_f = self._filter_error(ex_px, ey_px)
 
             try:
-                vx = float(PID_Y.update(-ey_f)) #đảo dấu -ey_f để đúng chiều tiến lùi theo trục ảnh
+                vx = float(PID_Y.update(-ey_f))
             except Exception:
                 vx = 0.0
             try:
@@ -1328,19 +1321,23 @@ class DroneController:
             except Exception:
                 vy = 0.0
 
-            # Giới hạn tốc độ
             vx = float(np.clip(vx, -max_vxy, max_vxy))
             vy = float(np.clip(vy, -max_vxy, max_vxy))
 
-            log.info(f"[PID_CONTROL] target={tagU} ex={ex_f:.1f} ey={ey_f:.1f} vx={vx:.3f} vy={vy:.3f}")
-            # Tránh rung micro quanh điểm cân bằng
+            log.info(
+                f"[PID_CONTROL] target={tagU} "
+                f"ex_raw={float(ex_px):.1f} ey_raw={float(ey_px):.1f} "
+                f"ex_lpf={ex_f:.1f} ey_lpf={ey_f:.1f} "
+                f"vx={vx:.3f} vy={vy:.3f}"
+            )
+
             if abs(ex_f) <= float(tol_px) and abs(ey_f) <= float(tol_px):
                 vx, vy = 0.0, 0.0
 
             self._append_pid_sample("seek", tagU, ex_f, ey_f, vx, vy)
             self.send_local_ned_velocity(vx, vy, 0.0)
             return ex_f, ey_f, vx, vy
-        
+
         # =========== Chọn màu và phân biết RED1, RED2, YELLOW_LEFT, YELLOW_RIGHT VÀ BLUE    ================
         while not self._stop_flag:
             now = time.time()
@@ -1475,11 +1472,9 @@ class DroneController:
                         try:
                             PID_X.reset()
                             PID_Y.reset()
+                            self._reset_error_filters(ex, ey)
                         except Exception:
                             pass
-                        # Re-init EMA (ex_f, ey_f = ex, ey): tránh EMA nhảy mạnh lúc chuyển trạng thái
-                        ex_f, ey_f = ex, ey
-                        ema_inited = True
                         log.info(f"[HOLD-ZONE] start target={target_tag}")
 
                     elapsed = now - hold_start
@@ -1537,6 +1532,7 @@ class DroneController:
         try:
             PID_X.reset()
             PID_Y.reset()
+            self._reset_error_filters()
         except Exception:
             pass
 
@@ -1560,7 +1556,6 @@ class DroneController:
         dt = 1.0 / float(max(1e-6, loop_hz))
         log_t = 0.0
 
-        ema_state = {"inited": False, "ex_f": 0.0, "ey_f": 0.0}
         hold_start = None
         h_lock = None
         lock_gate2 = float(lock_dist_px) * float(lock_dist_px)
@@ -1665,8 +1660,6 @@ class DroneController:
                 ey_px=ey,
                 tol_px=tol_px,
                 max_vxy=max_vxy if (alt is None or alt > 1.2) else min(max_vxy, 0.18),
-                ema_alpha=ema_alpha,
-                ema_state=ema_state,
                 send_now=False,
                 vz=0.0,
             )
@@ -1913,6 +1906,7 @@ def main():
             connection_str=connection_str,
             takeoff_height=takeoff_height,
             cam_index=cam_index,
+            enable_vehicle=enable_vehicle,
             enable_mission=enable_mission,
         )
         dc.run_viewer_loop()  # OpenCV window must run on main thread

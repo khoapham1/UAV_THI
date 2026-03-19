@@ -1,0 +1,226 @@
+[2026-03-18 02:09:05.596] [2770] [HailoRT] [info] [vstream_builder.cpp:220] [create_outputs] Output pipeline 'yolo26n/conv80': HW >> (HwReadEl0yolo26n/conv80 | hw_frame_size: 6400) >> (PullQEl_hw_read0yolo26n/conv80) >> (PostInferEl0yolo26n/conv80 | Quantization - src_type: UINT8, dst_type FLOAT32, limvals_min: -107.956, limvals_max: 3.94962) >> (UserBuffQEl0yolo26n/conv80 | timeout: 10s)
+[2026-03-18 02:09:05.596] [2770] [HailoRT] [info] [edge_elements.cpp:287] [create] Created (HwReadEl1yolo26n/conv91 | hw_frame_size: 3200)
+[2026-03-18 02:09:05.597] [2770] [HailoRT] [info] [queue_elements.cpp:657] [create] Created (PullQEl_hw_read1yolo26n/conv91)
+[2026-03-18 02:09:05.597] [2770] [HailoRT] [info] [filter_elements.cpp:372] [create] Created (PostInferEl1yolo26n/conv91 | Quantization - src_type: UINT8, dst_type FLOAT32, limvals_min: 0, limvals_max: 12.9536 | Reorder - src_order: FCR, src_shape: (20, 20, 8), dst_order: FCR, dst_shape: (20, 20, 4))
+[2026-03-18 02:09:05.597] [2770] [HailoRT] [info] [queue_elements.cpp:800] [create] Created (UserBuffQEl1yolo26n/conv91 | timeout: 10s)
+[2026-03-18 02:09:05.597] [2770] [HailoRT] [info] [vstream.cpp:1114] [OutputVStreamImpl] Creating yolo26n/conv91...
+[2026-03-18 02:09:05.597] [2770] [HailoRT] [info] [vstream_builder.cpp:220] [create_outputs] Output pipeline 'yolo26n/conv91': HW >> (HwReadEl1yolo26n/conv91 | hw_frame_size: 3200) >> (PullQEl_hw_read1yolo26n/conv91) >> (PostInferEl1yolo26n/conv91 | Quantization - src_type: UINT8, dst_type FLOAT32, limvals_min: 0, limvals_max: 12.9536 | Reorder - src_order: FCR, src_shape: (20, 20, 8), dst_order: FCR, dst_shape: (20, 20, 4)) >> (UserBuffQEl1yolo26n/conv91 | timeout: 10s)
+[2026-03-18 02:09:05.597] [2770] [HailoRT] [info] [edge_elements.cpp:287] [create] Created (HwReadEl0yolo26n/conv94 | hw_frame_size: 3200)
+[2026-03-18 02:09:05.597] [2770] [HailoRT] [info] [queue_elements.cpp:657] [create] Created (PullQEl_hw_read0yolo26n/conv94)
+[2026-03-18 02:09:05.597] [2770] [HailoRT] [info] [filter_elements.cpp:372] [create] Created (PostInferEl0yolo26n/conv94 | Quantization - src_type: UINT8, dst_type FLOAT32, limvals_min: -60.1107, limvals_max: 4.29362 | Reorder - src_order: FCR, src_shape: (20, 20, 8), dst_order: FCR, dst_shape: (20, 20, 4))
+[2026-03-18 02:09:05.597] [2770] [HailoRT] [info] [queue_elements.cpp:800] [create] Created (UserBuffQEl0yolo26n/conv94 | timeout: 10s)
+[2026-03-18 02:09:05.597] [2770] [HailoRT] [info] [vstream.cpp:1114] [OutputVStreamImpl] Creating yolo26n/conv94...
+[2026-03-18 02:09:05.597] [2770] [HailoRT] [info] [vstream_builder.cpp:220] [create_outputs] Output pipeline 'yolo26n/conv94': HW >> (HwReadEl0yolo26n/conv94 | hw_frame_size: 3200) >> (PullQEl_hw_read0yolo26n/conv94) >> (PostInferEl0yolo26n/conv94 | Quantization - src_type: UINT8, dst_type FLOAT32, limvals_min: -60.1107, limvals_max: 4.29362 | Reorder - src_order: FCR, src_shape: (20, 20, 8), dst_order: FCR, dst_shape: (20, 20, 4)) >> (UserBuffQEl0yolo26n/conv94 | timeout: 10s)
+[2026-03-18 02:09:05.609] [6101] [HailoRT] [info] [queue_elements.cpp:855] [run_in_thread] Shutdown event was signaled in dequeue of UserBuffQEl3yolo26n/conv61!
+[2026-03-18 02:09:05.609] [6100] [HailoRT] [info] [vdevice_native_stream.cpp:331] [read_impl] Failed read from stream HAILO_STREAM_ABORT(63) (device: 0001:01:00.0)
+[2026-03-18 02:09:05.609] [6100] [HailoRT] [info] [edge_elements.cpp:396] [run_pull] Reading from stream was aborted!
+[2026-03-18 02:09:05.609] [6100] [HailoRT] [info] [queue_elements.cpp:738] [run_in_thread] run_pull of queue element PullQEl_hw_read3yolo26n/conv61 was aborted!
+[2026-03-18 02:09:05.609] [6100] [HailoRT] [info] [queue_elements.cpp:68] [operator()] Thread in element PullQEl_hw_read3yolo26n/conv61 is not running anymore, exiting..
+[2026-03-18 02:09:05.609] [2770] [HailoRT] [info] [queue_elements.cpp:46] [~BaseQueueElement] Queue element PullQEl_hw_read3yolo26n/conv61 has 0 frames in his Queue on destruction
+[2026-03-18 02:09:05.609] [6101] [HailoRT] [info] [queue_elements.cpp:68] [operator()] Thread in element UserBuffQEl3yolo26n/conv61 is not running anymore, exiting..
+[2026-03-18 02:09:05.609] [2770] [HailoRT] [info] [queue_elements.cpp:46] [~BaseQueueElement] Queue element UserBuffQEl3yolo26n/conv61 has 0 frames in his Queue on destruction
+[2026-03-18 02:09:05.609] [6102] [HailoRT] [info] [vdevice_native_stream.cpp:331] [read_impl] Failed read from stream HAILO_STREAM_ABORT(63) (device: 0001:01:00.0)
+[2026-03-18 02:09:05.609] [6102] [HailoRT] [info] [edge_elements.cpp:396] [run_pull] Reading from stream was aborted!
+[2026-03-18 02:09:05.609] [6102] [HailoRT] [info] [queue_elements.cpp:738] [run_in_thread] run_pull of queue element PullQEl_hw_read2yolo26n/conv64 was aborted!
+[2026-03-18 02:09:05.609] [6103] [HailoRT] [info] [queue_elements.cpp:855] [run_in_thread] Shutdown event was signaled in dequeue of UserBuffQEl2yolo26n/conv64!
+[2026-03-18 02:09:05.609] [6102] [HailoRT] [info] [queue_elements.cpp:68] [operator()] Thread in element PullQEl_hw_read2yolo26n/conv64 is not running anymore, exiting..
+[2026-03-18 02:09:05.609] [2770] [HailoRT] [info] [queue_elements.cpp:46] [~BaseQueueElement] Queue element PullQEl_hw_read2yolo26n/conv64 has 0 frames in his Queue on destruction
+[2026-03-18 02:09:05.609] [6103] [HailoRT] [info] [queue_elements.cpp:68] [operator()] Thread in element UserBuffQEl2yolo26n/conv64 is not running anymore, exiting..
+[2026-03-18 02:09:05.609] [2770] [HailoRT] [info] [queue_elements.cpp:46] [~BaseQueueElement] Queue element UserBuffQEl2yolo26n/conv64 has 0 frames in his Queue on destruction
+[2026-03-18 02:09:05.609] [6105] [HailoRT] [info] [queue_elements.cpp:855] [run_in_thread] Shutdown event was signaled in dequeue of UserBuffQEl1yolo26n/conv77!
+[2026-03-18 02:09:05.609] [6104] [HailoRT] [info] [vdevice_native_stream.cpp:331] [read_impl] Failed read from stream HAILO_STREAM_ABORT(63) (device: 0001:01:00.0)
+[2026-03-18 02:09:05.609] [6104] [HailoRT] [info] [edge_elements.cpp:396] [run_pull] Reading from stream was aborted!
+[2026-03-18 02:09:05.609] [6104] [HailoRT] [info] [queue_elements.cpp:738] [run_in_thread] run_pull of queue element PullQEl_hw_read1yolo26n/conv77 was aborted!
+[2026-03-18 02:09:05.609] [6104] [HailoRT] [info] [queue_elements.cpp:68] [operator()] Thread in element PullQEl_hw_read1yolo26n/conv77 is not running anymore, exiting..
+[2026-03-18 02:09:05.609] [2770] [HailoRT] [info] [queue_elements.cpp:46] [~BaseQueueElement] Queue element PullQEl_hw_read1yolo26n/conv77 has 0 frames in his Queue on destruction
+[2026-03-18 02:09:05.609] [6105] [HailoRT] [info] [queue_elements.cpp:68] [operator()] Thread in element UserBuffQEl1yolo26n/conv77 is not running anymore, exiting..
+[2026-03-18 02:09:05.609] [2770] [HailoRT] [info] [queue_elements.cpp:46] [~BaseQueueElement] Queue element UserBuffQEl1yolo26n/conv77 has 0 frames in his Queue on destruction
+[2026-03-18 02:09:05.609] [6106] [HailoRT] [info] [vdevice_native_stream.cpp:331] [read_impl] Failed read from stream HAILO_STREAM_ABORT(63) (device: 0001:01:00.0)
+[2026-03-18 02:09:05.609] [6107] [HailoRT] [info] [queue_elements.cpp:855] [run_in_thread] Shutdown event was signaled in dequeue of UserBuffQEl0yolo26n/conv80!
+[2026-03-18 02:09:05.609] [6106] [HailoRT] [info] [edge_elements.cpp:396] [run_pull] Reading from stream was aborted!
+[2026-03-18 02:09:05.609] [6106] [HailoRT] [info] [queue_elements.cpp:738] [run_in_thread] run_pull of queue element PullQEl_hw_read0yolo26n/conv80 was aborted!
+[2026-03-18 02:09:05.609] [6106] [HailoRT] [info] [queue_elements.cpp:68] [operator()] Thread in element PullQEl_hw_read0yolo26n/conv80 is not running anymore, exiting..
+[2026-03-18 02:09:05.609] [2770] [HailoRT] [info] [queue_elements.cpp:46] [~BaseQueueElement] Queue element PullQEl_hw_read0yolo26n/conv80 has 0 frames in his Queue on destruction
+[2026-03-18 02:09:05.609] [6107] [HailoRT] [info] [queue_elements.cpp:68] [operator()] Thread in element UserBuffQEl0yolo26n/conv80 is not running anymore, exiting..
+[2026-03-18 02:09:05.609] [2770] [HailoRT] [info] [queue_elements.cpp:46] [~BaseQueueElement] Queue element UserBuffQEl0yolo26n/conv80 has 0 frames in his Queue on destruction
+[2026-03-18 02:09:05.609] [6108] [HailoRT] [info] [vdevice_native_stream.cpp:331] [read_impl] Failed read from stream HAILO_STREAM_ABORT(63) (device: 0001:01:00.0)
+[2026-03-18 02:09:05.609] [6108] [HailoRT] [info] [edge_elements.cpp:396] [run_pull] Reading from stream was aborted!
+[2026-03-18 02:09:05.609] [6109] [HailoRT] [info] [queue_elements.cpp:855] [run_in_thread] Shutdown event was signaled in dequeue of UserBuffQEl1yolo26n/conv91!
+[2026-03-18 02:09:05.609] [6108] [HailoRT] [info] [queue_elements.cpp:738] [run_in_thread] run_pull of queue element PullQEl_hw_read1yolo26n/conv91 was aborted!
+[2026-03-18 02:09:05.609] [6108] [HailoRT] [info] [queue_elements.cpp:68] [operator()] Thread in element PullQEl_hw_read1yolo26n/conv91 is not running anymore, exiting..
+[2026-03-18 02:09:05.609] [2770] [HailoRT] [info] [queue_elements.cpp:46] [~BaseQueueElement] Queue element PullQEl_hw_read1yolo26n/conv91 has 0 frames in his Queue on destruction
+[2026-03-18 02:09:05.609] [6109] [HailoRT] [info] [queue_elements.cpp:68] [operator()] Thread in element UserBuffQEl1yolo26n/conv91 is not running anymore, exiting..
+[2026-03-18 02:09:05.610] [2770] [HailoRT] [info] [queue_elements.cpp:46] [~BaseQueueElement] Queue element UserBuffQEl1yolo26n/conv91 has 0 frames in his Queue on destruction
+[2026-03-18 02:09:05.610] [6110] [HailoRT] [info] [vdevice_native_stream.cpp:331] [read_impl] Failed read from stream HAILO_STREAM_ABORT(63) (device: 0001:01:00.0)
+[2026-03-18 02:09:05.610] [6110] [HailoRT] [info] [edge_elements.cpp:396] [run_pull] Reading from stream was aborted!
+[2026-03-18 02:09:05.610] [6110] [HailoRT] [info] [queue_elements.cpp:738] [run_in_thread] run_pull of queue element PullQEl_hw_read0yolo26n/conv94 was aborted!
+[2026-03-18 02:09:05.610] [6111] [HailoRT] [info] [queue_elements.cpp:855] [run_in_thread] Shutdown event was signaled in dequeue of UserBuffQEl0yolo26n/conv94!
+[2026-03-18 02:09:05.610] [6110] [HailoRT] [info] [queue_elements.cpp:68] [operator()] Thread in element PullQEl_hw_read0yolo26n/conv94 is not running anymore, exiting..
+[2026-03-18 02:09:05.610] [2770] [HailoRT] [info] [queue_elements.cpp:46] [~BaseQueueElement] Queue element PullQEl_hw_read0yolo26n/conv94 has 0 frames in his Queue on destruction
+[2026-03-18 02:09:05.610] [6111] [HailoRT] [info] [queue_elements.cpp:68] [operator()] Thread in element UserBuffQEl0yolo26n/conv94 is not running anymore, exiting..
+[2026-03-18 02:09:05.610] [2770] [HailoRT] [info] [queue_elements.cpp:46] [~BaseQueueElement] Queue element UserBuffQEl0yolo26n/conv94 has 0 frames in his Queue on destruction
+[2026-03-18 02:09:05.610] [6099] [HailoRT] [info] [queue_elements.cpp:68] [operator()] Thread in element PushQEl2yolo26n/input_layer1 is not running anymore, exiting..
+[2026-03-18 02:09:05.610] [2770] [HailoRT] [info] [queue_elements.cpp:46] [~BaseQueueElement] Queue element PushQEl2yolo26n/input_layer1 has 0 frames in his Queue on destruction
+[2026-03-18 02:09:05.610] [2770] [HailoRT] [info] [core_op.cpp:186] [deactivate] Deactivating took 0.433092 ms
+[2026-03-18 02:09:05.610] [2770] [HailoRT] [info] [core_op.cpp:186] [deactivate] Deactivating took 0.443408 ms
+[2026-03-18 02:09:05.679] [2770] [HailoRT] [info] [core_op.cpp:156] [activate] Activating yolo26n took 0.485389 milliseconds. Note that the function is asynchronous and thus the network is not fully activated yet.
+[2026-03-18 02:09:05.679] [2770] [HailoRT] [info] [core_op.cpp:156] [activate] Activating yolo26n took 0.511408 milliseconds. Note that the function is asynchronous and thus the network is not fully activated yet.
+[2026-03-18 02:09:05.680] [2770] [HailoRT] [info] [edge_elements.cpp:52] [create] Created (HwWriteEl2yolo26n/input_layer1 | hw_frame_size: 1228800)
+[2026-03-18 02:09:05.680] [2770] [HailoRT] [info] [queue_elements.cpp:284] [create] Created (PushQEl2yolo26n/input_layer1 | timeout: 10s)
+[2026-03-18 02:09:05.680] [2770] [HailoRT] [info] [filter_elements.cpp:101] [create] Created (PreInferEl2yolo26n/input_layer1 | Reorder - src_order: NHWC, src_shape: (640, 640, 3), dst_order: NHCW, dst_shape: (640, 640, 3))
+[2026-03-18 02:09:05.680] [2770] [HailoRT] [info] [vstream.cpp:754] [InputVStreamImpl] Creating yolo26n/input_layer1...
+[2026-03-18 02:09:05.680] [2770] [HailoRT] [info] [vstream_builder.cpp:102] [create_inputs] Input pipeline 'yolo26n/input_layer1': (PreInferEl2yolo26n/input_layer1 | Reorder - src_order: NHWC, src_shape: (640, 640, 3), dst_order: NHCW, dst_shape: (640, 640, 3)) >> (PushQEl2yolo26n/input_layer1 | timeout: 10s) >> (HwWriteEl2yolo26n/input_layer1 | hw_frame_size: 1228800) >> HW
+[2026-03-18 02:09:05.680] [2770] [HailoRT] [info] [edge_elements.cpp:287] [create] Created (HwReadEl3yolo26n/conv61 | hw_frame_size: 25600)
+[2026-03-18 02:09:05.680] [2770] [HailoRT] [info] [queue_elements.cpp:657] [create] Created (PullQEl_hw_read3yolo26n/conv61)
+[2026-03-18 02:09:05.680] [2770] [HailoRT] [info] [filter_elements.cpp:372] [create] Created (PostInferEl3yolo26n/conv61 | Quantization - src_type: UINT8, dst_type FLOAT32, limvals_min: -1.13873, limvals_max: 9.23189)
+[2026-03-18 02:09:05.680] [2770] [HailoRT] [info] [queue_elements.cpp:800] [create] Created (UserBuffQEl3yolo26n/conv61 | timeout: 10s)
+[2026-03-18 02:09:05.680] [2770] [HailoRT] [info] [vstream.cpp:1114] [OutputVStreamImpl] Creating yolo26n/conv61...
+[2026-03-18 02:09:05.680] [2770] [HailoRT] [info] [vstream_builder.cpp:220] [create_outputs] Output pipeline 'yolo26n/conv61': HW >> (HwReadEl3yolo26n/conv61 | hw_frame_size: 25600) >> (PullQEl_hw_read3yolo26n/conv61) >> (PostInferEl3yolo26n/conv61 | Quantization - src_type: UINT8, dst_type FLOAT32, limvals_min: -1.13873, limvals_max: 9.23189) >> (UserBuffQEl3yolo26n/conv61 | timeout: 10s)
+[2026-03-18 02:09:05.680] [2770] [HailoRT] [info] [edge_elements.cpp:287] [create] Created (HwReadEl2yolo26n/conv64 | hw_frame_size: 25600)
+[2026-03-18 02:09:05.680] [2770] [HailoRT] [info] [queue_elements.cpp:657] [create] Created (PullQEl_hw_read2yolo26n/conv64)
+[2026-03-18 02:09:05.680] [2770] [HailoRT] [info] [filter_elements.cpp:372] [create] Created (PostInferEl2yolo26n/conv64 | Quantization - src_type: UINT8, dst_type FLOAT32, limvals_min: -29.6765, limvals_max: 0)
+[2026-03-18 02:09:05.680] [2770] [HailoRT] [info] [queue_elements.cpp:800] [create] Created (UserBuffQEl2yolo26n/conv64 | timeout: 10s)
+[2026-03-18 02:09:05.680] [2770] [HailoRT] [info] [vstream.cpp:1114] [OutputVStreamImpl] Creating yolo26n/conv64...
+[2026-03-18 02:09:05.680] [2770] [HailoRT] [info] [vstream_builder.cpp:220] [create_outputs] Output pipeline 'yolo26n/conv64': HW >> (HwReadEl2yolo26n/conv64 | hw_frame_size: 25600) >> (PullQEl_hw_read2yolo26n/conv64) >> (PostInferEl2yolo26n/conv64 | Quantization - src_type: UINT8, dst_type FLOAT32, limvals_min: -29.6765, limvals_max: 0) >> (UserBuffQEl2yolo26n/conv64 | timeout: 10s)
+[2026-03-18 02:09:05.680] [2770] [HailoRT] [info] [edge_elements.cpp:287] [create] Created (HwReadEl1yolo26n/conv77 | hw_frame_size: 6400)
+[2026-03-18 02:09:05.680] [2770] [HailoRT] [info] [queue_elements.cpp:657] [create] Created (PullQEl_hw_read1yolo26n/conv77)
+[2026-03-18 02:09:05.680] [2770] [HailoRT] [info] [filter_elements.cpp:372] [create] Created (PostInferEl1yolo26n/conv77 | Quantization - src_type: UINT8, dst_type FLOAT32, limvals_min: -0.037544, limvals_max: 9.53618)
+[2026-03-18 02:09:05.680] [2770] [HailoRT] [info] [queue_elements.cpp:800] [create] Created (UserBuffQEl1yolo26n/conv77 | timeout: 10s)
+[2026-03-18 02:09:05.680] [2770] [HailoRT] [info] [vstream.cpp:1114] [OutputVStreamImpl] Creating yolo26n/conv77...
+[2026-03-18 02:09:05.680] [2770] [HailoRT] [info] [vstream_builder.cpp:220] [create_outputs] Output pipeline 'yolo26n/conv77': HW >> (HwReadEl1yolo26n/conv77 | hw_frame_size: 6400) >> (PullQEl_hw_read1yolo26n/conv77) >> (PostInferEl1yolo26n/conv77 | Quantization - src_type: UINT8, dst_type FLOAT32, limvals_min: -0.037544, limvals_max: 9.53618) >> (UserBuffQEl1yolo26n/conv77 | timeout: 10s)
+[2026-03-18 02:09:05.680] [2770] [HailoRT] [info] [edge_elements.cpp:287] [create] Created (HwReadEl0yolo26n/conv80 | hw_frame_size: 6400)
+[2026-03-18 02:09:05.680] [2770] [HailoRT] [info] [queue_elements.cpp:657] [create] Created (PullQEl_hw_read0yolo26n/conv80)
+[2026-03-18 02:09:05.681] [2770] [HailoRT] [info] [filter_elements.cpp:372] [create] Created (PostInferEl0yolo26n/conv80 | Quantization - src_type: UINT8, dst_type FLOAT32, limvals_min: -107.956, limvals_max: 3.94962)
+[2026-03-18 02:09:05.681] [2770] [HailoRT] [info] [queue_elements.cpp:800] [create] Created (UserBuffQEl0yolo26n/conv80 | timeout: 10s)
+[2026-03-18 02:09:05.681] [2770] [HailoRT] [info] [vstream.cpp:1114] [OutputVStreamImpl] Creating yolo26n/conv80...
+[2026-03-18 02:09:05.681] [2770] [HailoRT] [info] [vstream_builder.cpp:220] [create_outputs] Output pipeline 'yolo26n/conv80': HW >> (HwReadEl0yolo26n/conv80 | hw_frame_size: 6400) >> (PullQEl_hw_read0yolo26n/conv80) >> (PostInferEl0yolo26n/conv80 | Quantization - src_type: UINT8, dst_type FLOAT32, limvals_min: -107.956, limvals_max: 3.94962) >> (UserBuffQEl0yolo26n/conv80 | timeout: 10s)
+[2026-03-18 02:09:05.682] [2770] [HailoRT] [info] [edge_elements.cpp:287] [create] Created (HwReadEl1yolo26n/conv91 | hw_frame_size: 3200)
+[2026-03-18 02:09:05.682] [2770] [HailoRT] [info] [queue_elements.cpp:657] [create] Created (PullQEl_hw_read1yolo26n/conv91)
+[2026-03-18 02:09:05.682] [2770] [HailoRT] [info] [filter_elements.cpp:372] [create] Created (PostInferEl1yolo26n/conv91 | Quantization - src_type: UINT8, dst_type FLOAT32, limvals_min: 0, limvals_max: 12.9536 | Reorder - src_order: FCR, src_shape: (20, 20, 8), dst_order: FCR, dst_shape: (20, 20, 4))
+[2026-03-18 02:09:05.682] [2770] [HailoRT] [info] [queue_elements.cpp:800] [create] Created (UserBuffQEl1yolo26n/conv91 | timeout: 10s)
+[2026-03-18 02:09:05.682] [2770] [HailoRT] [info] [vstream.cpp:1114] [OutputVStreamImpl] Creating yolo26n/conv91...
+[2026-03-18 02:09:05.682] [2770] [HailoRT] [info] [vstream_builder.cpp:220] [create_outputs] Output pipeline 'yolo26n/conv91': HW >> (HwReadEl1yolo26n/conv91 | hw_frame_size: 3200) >> (PullQEl_hw_read1yolo26n/conv91) >> (PostInferEl1yolo26n/conv91 | Quantization - src_type: UINT8, dst_type FLOAT32, limvals_min: 0, limvals_max: 12.9536 | Reorder - src_order: FCR, src_shape: (20, 20, 8), dst_order: FCR, dst_shape: (20, 20, 4)) >> (UserBuffQEl1yolo26n/conv91 | timeout: 10s)
+[2026-03-18 02:09:05.682] [2770] [HailoRT] [info] [edge_elements.cpp:287] [create] Created (HwReadEl0yolo26n/conv94 | hw_frame_size: 3200)
+[2026-03-18 02:09:05.682] [2770] [HailoRT] [info] [queue_elements.cpp:657] [create] Created (PullQEl_hw_read0yolo26n/conv94)
+[2026-03-18 02:09:05.682] [2770] [HailoRT] [info] [filter_elements.cpp:372] [create] Created (PostInferEl0yolo26n/conv94 | Quantization - src_type: UINT8, dst_type FLOAT32, limvals_min: -60.1107, limvals_max: 4.29362 | Reorder - src_order: FCR, src_shape: (20, 20, 8), dst_order: FCR, dst_shape: (20, 20, 4))
+[2026-03-18 02:09:05.682] [2770] [HailoRT] [info] [queue_elements.cpp:800] [create] Created (UserBuffQEl0yolo26n/conv94 | timeout: 10s)
+[2026-03-18 02:09:05.682] [2770] [HailoRT] [info] [vstream.cpp:1114] [OutputVStreamImpl] Creating yolo26n/conv94...
+[2026-03-18 02:09:05.682] [2770] [HailoRT] [info] [vstream_builder.cpp:220] [create_outputs] Output pipeline 'yolo26n/conv94': HW >> (HwReadEl0yolo26n/conv94 | hw_frame_size: 3200) >> (PullQEl_hw_read0yolo26n/conv94) >> (PostInferEl0yolo26n/conv94 | Quantization - src_type: UINT8, dst_type FLOAT32, limvals_min: -60.1107, limvals_max: 4.29362 | Reorder - src_order: FCR, src_shape: (20, 20, 8), dst_order: FCR, dst_shape: (20, 20, 4)) >> (UserBuffQEl0yolo26n/conv94 | timeout: 10s)
+[2026-03-18 02:09:05.695] [6121] [HailoRT] [info] [queue_elements.cpp:855] [run_in_thread] Shutdown event was signaled in dequeue of UserBuffQEl3yolo26n/conv61!
+[2026-03-18 02:09:05.695] [6120] [HailoRT] [info] [vdevice_native_stream.cpp:331] [read_impl] Failed read from stream HAILO_STREAM_ABORT(63) (device: 0001:01:00.0)
+[2026-03-18 02:09:05.695] [6120] [HailoRT] [info] [edge_elements.cpp:396] [run_pull] Reading from stream was aborted!
+[2026-03-18 02:09:05.695] [6120] [HailoRT] [info] [queue_elements.cpp:738] [run_in_thread] run_pull of queue element PullQEl_hw_read3yolo26n/conv61 was aborted!
+[2026-03-18 02:09:05.695] [6120] [HailoRT] [info] [queue_elements.cpp:68] [operator()] Thread in element PullQEl_hw_read3yolo26n/conv61 is not running anymore, exiting..
+[2026-03-18 02:09:05.695] [2770] [HailoRT] [info] [queue_elements.cpp:46] [~BaseQueueElement] Queue element PullQEl_hw_read3yolo26n/conv61 has 0 frames in his Queue on destruction
+[2026-03-18 02:09:05.695] [6121] [HailoRT] [info] [queue_elements.cpp:68] [operator()] Thread in element UserBuffQEl3yolo26n/conv61 is not running anymore, exiting..
+[2026-03-18 02:09:05.695] [2770] [HailoRT] [info] [queue_elements.cpp:46] [~BaseQueueElement] Queue element UserBuffQEl3yolo26n/conv61 has 0 frames in his Queue on destruction
+[2026-03-18 02:09:05.695] [6122] [HailoRT] [info] [vdevice_native_stream.cpp:331] [read_impl] Failed read from stream HAILO_STREAM_ABORT(63) (device: 0001:01:00.0)
+[2026-03-18 02:09:05.695] [6122] [HailoRT] [info] [edge_elements.cpp:396] [run_pull] Reading from stream was aborted!
+[2026-03-18 02:09:05.695] [6123] [HailoRT] [info] [queue_elements.cpp:855] [run_in_thread] Shutdown event was signaled in dequeue of UserBuffQEl2yolo26n/conv64!
+[2026-03-18 02:09:05.695] [6122] [HailoRT] [info] [queue_elements.cpp:738] [run_in_thread] run_pull of queue element PullQEl_hw_read2yolo26n/conv64 was aborted!
+[2026-03-18 02:09:05.695] [6122] [HailoRT] [info] [queue_elements.cpp:68] [operator()] Thread in element PullQEl_hw_read2yolo26n/conv64 is not running anymore, exiting..
+[2026-03-18 02:09:05.695] [2770] [HailoRT] [info] [queue_elements.cpp:46] [~BaseQueueElement] Queue element PullQEl_hw_read2yolo26n/conv64 has 0 frames in his Queue on destruction
+[2026-03-18 02:09:05.695] [6123] [HailoRT] [info] [queue_elements.cpp:68] [operator()] Thread in element UserBuffQEl2yolo26n/conv64 is not running anymore, exiting..
+[2026-03-18 02:09:05.695] [2770] [HailoRT] [info] [queue_elements.cpp:46] [~BaseQueueElement] Queue element UserBuffQEl2yolo26n/conv64 has 0 frames in his Queue on destruction
+[2026-03-18 02:09:05.695] [6125] [HailoRT] [info] [queue_elements.cpp:855] [run_in_thread] Shutdown event was signaled in dequeue of UserBuffQEl1yolo26n/conv77!
+[2026-03-18 02:09:05.695] [6124] [HailoRT] [info] [vdevice_native_stream.cpp:331] [read_impl] Failed read from stream HAILO_STREAM_ABORT(63) (device: 0001:01:00.0)
+[2026-03-18 02:09:05.695] [6124] [HailoRT] [info] [edge_elements.cpp:396] [run_pull] Reading from stream was aborted!
+[2026-03-18 02:09:05.695] [6124] [HailoRT] [info] [queue_elements.cpp:738] [run_in_thread] run_pull of queue element PullQEl_hw_read1yolo26n/conv77 was aborted!
+[2026-03-18 02:09:05.695] [6124] [HailoRT] [info] [queue_elements.cpp:68] [operator()] Thread in element PullQEl_hw_read1yolo26n/conv77 is not running anymore, exiting..
+[2026-03-18 02:09:05.695] [2770] [HailoRT] [info] [queue_elements.cpp:46] [~BaseQueueElement] Queue element PullQEl_hw_read1yolo26n/conv77 has 0 frames in his Queue on destruction
+[2026-03-18 02:09:05.695] [6125] [HailoRT] [info] [queue_elements.cpp:68] [operator()] Thread in element UserBuffQEl1yolo26n/conv77 is not running anymore, exiting..
+[2026-03-18 02:09:05.695] [2770] [HailoRT] [info] [queue_elements.cpp:46] [~BaseQueueElement] Queue element UserBuffQEl1yolo26n/conv77 has 0 frames in his Queue on destruction
+[2026-03-18 02:09:05.695] [6126] [HailoRT] [info] [vdevice_native_stream.cpp:331] [read_impl] Failed read from stream HAILO_STREAM_ABORT(63) (device: 0001:01:00.0)
+[2026-03-18 02:09:05.695] [6126] [HailoRT] [info] [edge_elements.cpp:396] [run_pull] Reading from stream was aborted!
+[2026-03-18 02:09:05.695] [6127] [HailoRT] [info] [queue_elements.cpp:855] [run_in_thread] Shutdown event was signaled in dequeue of UserBuffQEl0yolo26n/conv80!
+[2026-03-18 02:09:05.695] [6126] [HailoRT] [info] [queue_elements.cpp:738] [run_in_thread] run_pull of queue element PullQEl_hw_read0yolo26n/conv80 was aborted!
+[2026-03-18 02:09:05.695] [6126] [HailoRT] [info] [queue_elements.cpp:68] [operator()] Thread in element PullQEl_hw_read0yolo26n/conv80 is not running anymore, exiting..
+[2026-03-18 02:09:05.695] [2770] [HailoRT] [info] [queue_elements.cpp:46] [~BaseQueueElement] Queue element PullQEl_hw_read0yolo26n/conv80 has 0 frames in his Queue on destruction
+[2026-03-18 02:09:05.696] [6127] [HailoRT] [info] [queue_elements.cpp:68] [operator()] Thread in element UserBuffQEl0yolo26n/conv80 is not running anymore, exiting..
+[2026-03-18 02:09:05.696] [2770] [HailoRT] [info] [queue_elements.cpp:46] [~BaseQueueElement] Queue element UserBuffQEl0yolo26n/conv80 has 0 frames in his Queue on destruction
+[2026-03-18 02:09:05.696] [6129] [HailoRT] [info] [queue_elements.cpp:855] [run_in_thread] Shutdown event was signaled in dequeue of UserBuffQEl1yolo26n/conv91!
+[2026-03-18 02:09:05.696] [6128] [HailoRT] [info] [vdevice_native_stream.cpp:331] [read_impl] Failed read from stream HAILO_STREAM_ABORT(63) (device: 0001:01:00.0)
+[2026-03-18 02:09:05.696] [6128] [HailoRT] [info] [edge_elements.cpp:396] [run_pull] Reading from stream was aborted!
+[2026-03-18 02:09:05.696] [6128] [HailoRT] [info] [queue_elements.cpp:738] [run_in_thread] run_pull of queue element PullQEl_hw_read1yolo26n/conv91 was aborted!
+[2026-03-18 02:09:05.696] [6128] [HailoRT] [info] [queue_elements.cpp:68] [operator()] Thread in element PullQEl_hw_read1yolo26n/conv91 is not running anymore, exiting..
+[2026-03-18 02:09:05.696] [2770] [HailoRT] [info] [queue_elements.cpp:46] [~BaseQueueElement] Queue element PullQEl_hw_read1yolo26n/conv91 has 0 frames in his Queue on destruction
+[2026-03-18 02:09:05.696] [6129] [HailoRT] [info] [queue_elements.cpp:68] [operator()] Thread in element UserBuffQEl1yolo26n/conv91 is not running anymore, exiting..
+[2026-03-18 02:09:05.696] [2770] [HailoRT] [info] [queue_elements.cpp:46] [~BaseQueueElement] Queue element UserBuffQEl1yolo26n/conv91 has 0 frames in his Queue on destruction
+[2026-03-18 02:09:05.696] [6130] [HailoRT] [info] [vdevice_native_stream.cpp:331] [read_impl] Failed read from stream HAILO_STREAM_ABORT(63) (device: 0001:01:00.0)
+[2026-03-18 02:09:05.696] [6130] [HailoRT] [info] [edge_elements.cpp:396] [run_pull] Reading from stream was aborted!
+[2026-03-18 02:09:05.696] [6130] [HailoRT] [info] [queue_elements.cpp:738] [run_in_thread] run_pull of queue element PullQEl_hw_read0yolo26n/conv94 was aborted!
+[2026-03-18 02:09:05.696] [6131] [HailoRT] [info] [queue_elements.cpp:855] [run_in_thread] Shutdown event was signaled in dequeue of UserBuffQEl0yolo26n/conv94!
+[2026-03-18 02:09:05.696] [6130] [HailoRT] [info] [queue_elements.cpp:68] [operator()] Thread in element PullQEl_hw_read0yolo26n/conv94 is not running anymore, exiting..
+[2026-03-18 02:09:05.696] [2770] [HailoRT] [info] [queue_elements.cpp:46] [~BaseQueueElement] Queue element PullQEl_hw_read0yolo26n/conv94 has 0 frames in his Queue on destruction
+[2026-03-18 02:09:05.696] [6131] [HailoRT] [info] [queue_elements.cpp:68] [operator()] Thread in element UserBuffQEl0yolo26n/conv94 is not running anymore, exiting..
+[2026-03-18 02:09:05.696] [2770] [HailoRT] [info] [queue_elements.cpp:46] [~BaseQueueElement] Queue element UserBuffQEl0yolo26n/conv94 has 0 frames in his Queue on destruction
+[2026-03-18 02:09:05.696] [6119] [HailoRT] [info] [queue_elements.cpp:68] [operator()] Thread in element PushQEl2yolo26n/input_layer1 is not running anymore, exiting..
+[2026-03-18 02:09:05.696] [2770] [HailoRT] [info] [queue_elements.cpp:46] [~BaseQueueElement] Queue element PushQEl2yolo26n/input_layer1 has 0 frames in his Queue on destruction
+[2026-03-18 02:09:05.696] [2770] [HailoRT] [info] [core_op.cpp:186] [deactivate] Deactivating took 0.430723 ms
+[2026-03-18 02:09:05.696] [2770] [HailoRT] [info] [core_op.cpp:186] [deactivate] Deactivating took 0.440723 ms
+[2026-03-19 16:24:08.268] [1545] [HailoRT] [info] [vdevice.cpp:535] [create] Creating vdevice with params: device_count: 1, scheduling_algorithm: NONE, multi_process_service: false
+[2026-03-19 16:24:08.273] [1545] [HailoRT] [error] [vdevice.cpp:863] [create_devices] CHECK failed - Failed to create vdevice. there are not enough free devices. requested: 1, found: 0
+[2026-03-19 16:24:08.276] [1545] [HailoRT] [error] [vdevice.cpp:662] [create] CHECK_SUCCESS failed with status=HAILO_OUT_OF_PHYSICAL_DEVICES(74)
+[2026-03-19 16:24:08.276] [1545] [HailoRT] [error] [shared_resource_manager.hpp:81] [register_resource] CHECK_SUCCESS failed with status=HAILO_OUT_OF_PHYSICAL_DEVICES(74)
+[2026-03-19 16:24:08.276] [1545] [HailoRT] [error] [vdevice.cpp:133] [create] CHECK_SUCCESS failed with status=HAILO_OUT_OF_PHYSICAL_DEVICES(74)
+[2026-03-19 16:24:08.276] [1545] [HailoRT] [error] [vdevice.cpp:567] [create] CHECK_SUCCESS failed with status=HAILO_OUT_OF_PHYSICAL_DEVICES(74)
+[2026-03-19 16:24:08.326] [1545] [HailoRT] [info] [vdevice.cpp:535] [create] Creating vdevice with params: device_count: 1, scheduling_algorithm: NONE, multi_process_service: false
+[2026-03-19 16:24:08.327] [1545] [HailoRT] [error] [vdevice.cpp:863] [create_devices] CHECK failed - Failed to create vdevice. there are not enough free devices. requested: 1, found: 0
+[2026-03-19 16:24:08.327] [1545] [HailoRT] [error] [vdevice.cpp:662] [create] CHECK_SUCCESS failed with status=HAILO_OUT_OF_PHYSICAL_DEVICES(74)
+[2026-03-19 16:24:08.327] [1545] [HailoRT] [error] [shared_resource_manager.hpp:81] [register_resource] CHECK_SUCCESS failed with status=HAILO_OUT_OF_PHYSICAL_DEVICES(74)
+[2026-03-19 16:24:08.327] [1545] [HailoRT] [error] [vdevice.cpp:133] [create] CHECK_SUCCESS failed with status=HAILO_OUT_OF_PHYSICAL_DEVICES(74)
+[2026-03-19 16:24:08.327] [1545] [HailoRT] [error] [vdevice.cpp:567] [create] CHECK_SUCCESS failed with status=HAILO_OUT_OF_PHYSICAL_DEVICES(74)
+[2026-03-19 16:31:36.143] [1490] [HailoRT] [info] [vdevice.cpp:535] [create] Creating vdevice with params: device_count: 1, scheduling_algorithm: NONE, multi_process_service: false
+[2026-03-19 16:31:36.147] [1490] [HailoRT] [error] [vdevice.cpp:863] [create_devices] CHECK failed - Failed to create vdevice. there are not enough free devices. requested: 1, found: 0
+[2026-03-19 16:31:36.150] [1490] [HailoRT] [error] [vdevice.cpp:662] [create] CHECK_SUCCESS failed with status=HAILO_OUT_OF_PHYSICAL_DEVICES(74)
+[2026-03-19 16:31:36.150] [1490] [HailoRT] [error] [shared_resource_manager.hpp:81] [register_resource] CHECK_SUCCESS failed with status=HAILO_OUT_OF_PHYSICAL_DEVICES(74)
+[2026-03-19 16:31:36.150] [1490] [HailoRT] [error] [vdevice.cpp:133] [create] CHECK_SUCCESS failed with status=HAILO_OUT_OF_PHYSICAL_DEVICES(74)
+[2026-03-19 16:31:36.150] [1490] [HailoRT] [error] [vdevice.cpp:567] [create] CHECK_SUCCESS failed with status=HAILO_OUT_OF_PHYSICAL_DEVICES(74)
+[2026-03-19 16:34:49.573] [2116] [HailoRT] [info] [vdevice.cpp:535] [create] Creating vdevice with params: device_count: 1, scheduling_algorithm: NONE, multi_process_service: false
+[2026-03-19 16:34:49.574] [2116] [HailoRT] [error] [vdevice.cpp:863] [create_devices] CHECK failed - Failed to create vdevice. there are not enough free devices. requested: 1, found: 0
+[2026-03-19 16:34:49.574] [2116] [HailoRT] [error] [vdevice.cpp:662] [create] CHECK_SUCCESS failed with status=HAILO_OUT_OF_PHYSICAL_DEVICES(74)
+[2026-03-19 16:34:49.574] [2116] [HailoRT] [error] [shared_resource_manager.hpp:81] [register_resource] CHECK_SUCCESS failed with status=HAILO_OUT_OF_PHYSICAL_DEVICES(74)
+[2026-03-19 16:34:49.574] [2116] [HailoRT] [error] [vdevice.cpp:133] [create] CHECK_SUCCESS failed with status=HAILO_OUT_OF_PHYSICAL_DEVICES(74)
+[2026-03-19 16:34:49.574] [2116] [HailoRT] [error] [vdevice.cpp:567] [create] CHECK_SUCCESS failed with status=HAILO_OUT_OF_PHYSICAL_DEVICES(74)
+[2026-03-19 16:36:46.956] [1551] [HailoRT] [info] [vdevice.cpp:535] [create] Creating vdevice with params: device_count: 1, scheduling_algorithm: NONE, multi_process_service: false
+[2026-03-19 16:36:46.961] [1551] [HailoRT] [error] [vdevice.cpp:863] [create_devices] CHECK failed - Failed to create vdevice. there are not enough free devices. requested: 1, found: 0
+[2026-03-19 16:36:46.964] [1551] [HailoRT] [error] [vdevice.cpp:662] [create] CHECK_SUCCESS failed with status=HAILO_OUT_OF_PHYSICAL_DEVICES(74)
+[2026-03-19 16:36:46.964] [1551] [HailoRT] [error] [shared_resource_manager.hpp:81] [register_resource] CHECK_SUCCESS failed with status=HAILO_OUT_OF_PHYSICAL_DEVICES(74)
+[2026-03-19 16:36:46.964] [1551] [HailoRT] [error] [vdevice.cpp:133] [create] CHECK_SUCCESS failed with status=HAILO_OUT_OF_PHYSICAL_DEVICES(74)
+[2026-03-19 16:36:46.964] [1551] [HailoRT] [error] [vdevice.cpp:567] [create] CHECK_SUCCESS failed with status=HAILO_OUT_OF_PHYSICAL_DEVICES(74)
+[2026-03-19 16:44:24.605] [2231] [HailoRT] [info] [vdevice.cpp:535] [create] Creating vdevice with params: device_count: 1, scheduling_algorithm: NONE, multi_process_service: false
+[2026-03-19 16:44:24.605] [2231] [HailoRT] [error] [vdevice.cpp:863] [create_devices] CHECK failed - Failed to create vdevice. there are not enough free devices. requested: 1, found: 0
+[2026-03-19 16:44:24.605] [2231] [HailoRT] [error] [vdevice.cpp:662] [create] CHECK_SUCCESS failed with status=HAILO_OUT_OF_PHYSICAL_DEVICES(74)
+[2026-03-19 16:44:24.605] [2231] [HailoRT] [error] [shared_resource_manager.hpp:81] [register_resource] CHECK_SUCCESS failed with status=HAILO_OUT_OF_PHYSICAL_DEVICES(74)
+[2026-03-19 16:44:24.605] [2231] [HailoRT] [error] [vdevice.cpp:133] [create] CHECK_SUCCESS failed with status=HAILO_OUT_OF_PHYSICAL_DEVICES(74)
+[2026-03-19 16:44:24.605] [2231] [HailoRT] [error] [vdevice.cpp:567] [create] CHECK_SUCCESS failed with status=HAILO_OUT_OF_PHYSICAL_DEVICES(74)
+[2026-03-19 16:47:20.720] [2488] [HailoRT] [info] [vdevice.cpp:535] [create] Creating vdevice with params: device_count: 1, scheduling_algorithm: NONE, multi_process_service: false
+[2026-03-19 16:47:20.720] [2488] [HailoRT] [error] [vdevice.cpp:863] [create_devices] CHECK failed - Failed to create vdevice. there are not enough free devices. requested: 1, found: 0
+[2026-03-19 16:47:20.728] [2488] [HailoRT] [error] [vdevice.cpp:662] [create] CHECK_SUCCESS failed with status=HAILO_OUT_OF_PHYSICAL_DEVICES(74)
+[2026-03-19 16:47:20.728] [2488] [HailoRT] [error] [shared_resource_manager.hpp:81] [register_resource] CHECK_SUCCESS failed with status=HAILO_OUT_OF_PHYSICAL_DEVICES(74)
+[2026-03-19 16:47:20.728] [2488] [HailoRT] [error] [vdevice.cpp:133] [create] CHECK_SUCCESS failed with status=HAILO_OUT_OF_PHYSICAL_DEVICES(74)
+[2026-03-19 16:47:20.728] [2488] [HailoRT] [error] [vdevice.cpp:567] [create] CHECK_SUCCESS failed with status=HAILO_OUT_OF_PHYSICAL_DEVICES(74)
+[2026-03-19 16:48:02.052] [2507] [HailoRT] [info] [vdevice.cpp:535] [create] Creating vdevice with params: device_count: 1, scheduling_algorithm: NONE, multi_process_service: false
+[2026-03-19 16:48:02.052] [2507] [HailoRT] [error] [vdevice.cpp:863] [create_devices] CHECK failed - Failed to create vdevice. there are not enough free devices. requested: 1, found: 0
+[2026-03-19 16:48:02.052] [2507] [HailoRT] [error] [vdevice.cpp:662] [create] CHECK_SUCCESS failed with status=HAILO_OUT_OF_PHYSICAL_DEVICES(74)
+[2026-03-19 16:48:02.052] [2507] [HailoRT] [error] [shared_resource_manager.hpp:81] [register_resource] CHECK_SUCCESS failed with status=HAILO_OUT_OF_PHYSICAL_DEVICES(74)
+[2026-03-19 16:48:02.052] [2507] [HailoRT] [error] [vdevice.cpp:133] [create] CHECK_SUCCESS failed with status=HAILO_OUT_OF_PHYSICAL_DEVICES(74)
+[2026-03-19 16:48:02.052] [2507] [HailoRT] [error] [vdevice.cpp:567] [create] CHECK_SUCCESS failed with status=HAILO_OUT_OF_PHYSICAL_DEVICES(74)
+[2026-03-19 16:55:16.884] [3210] [HailoRT] [info] [vdevice.cpp:535] [create] Creating vdevice with params: device_count: 1, scheduling_algorithm: NONE, multi_process_service: false
+[2026-03-19 16:55:16.884] [3210] [HailoRT] [error] [vdevice.cpp:863] [create_devices] CHECK failed - Failed to create vdevice. there are not enough free devices. requested: 1, found: 0
+[2026-03-19 16:55:16.884] [3210] [HailoRT] [error] [vdevice.cpp:662] [create] CHECK_SUCCESS failed with status=HAILO_OUT_OF_PHYSICAL_DEVICES(74)
+[2026-03-19 16:55:16.884] [3210] [HailoRT] [error] [shared_resource_manager.hpp:81] [register_resource] CHECK_SUCCESS failed with status=HAILO_OUT_OF_PHYSICAL_DEVICES(74)
+[2026-03-19 16:55:16.884] [3210] [HailoRT] [error] [vdevice.cpp:133] [create] CHECK_SUCCESS failed with status=HAILO_OUT_OF_PHYSICAL_DEVICES(74)
+[2026-03-19 16:55:16.884] [3210] [HailoRT] [error] [vdevice.cpp:567] [create] CHECK_SUCCESS failed with status=HAILO_OUT_OF_PHYSICAL_DEVICES(74)
+[2026-03-19 16:57:57.919] [4106] [HailoRT] [info] [vdevice.cpp:535] [create] Creating vdevice with params: device_count: 1, scheduling_algorithm: NONE, multi_process_service: false
+[2026-03-19 16:57:57.925] [4106] [HailoRT] [error] [vdevice.cpp:863] [create_devices] CHECK failed - Failed to create vdevice. there are not enough free devices. requested: 1, found: 0
+[2026-03-19 16:57:57.933] [4106] [HailoRT] [error] [vdevice.cpp:662] [create] CHECK_SUCCESS failed with status=HAILO_OUT_OF_PHYSICAL_DEVICES(74)
+[2026-03-19 16:57:57.933] [4106] [HailoRT] [error] [shared_resource_manager.hpp:81] [register_resource] CHECK_SUCCESS failed with status=HAILO_OUT_OF_PHYSICAL_DEVICES(74)
+[2026-03-19 16:57:57.933] [4106] [HailoRT] [error] [vdevice.cpp:133] [create] CHECK_SUCCESS failed with status=HAILO_OUT_OF_PHYSICAL_DEVICES(74)
+[2026-03-19 16:57:57.933] [4106] [HailoRT] [error] [vdevice.cpp:567] [create] CHECK_SUCCESS failed with status=HAILO_OUT_OF_PHYSICAL_DEVICES(74)
+[2026-03-19 16:57:58.001] [4106] [HailoRT] [info] [vdevice.cpp:535] [create] Creating vdevice with params: device_count: 1, scheduling_algorithm: NONE, multi_process_service: false
+[2026-03-19 16:57:58.001] [4106] [HailoRT] [error] [vdevice.cpp:863] [create_devices] CHECK failed - Failed to create vdevice. there are not enough free devices. requested: 1, found: 0
+[2026-03-19 16:57:58.001] [4106] [HailoRT] [error] [vdevice.cpp:662] [create] CHECK_SUCCESS failed with status=HAILO_OUT_OF_PHYSICAL_DEVICES(74)
+[2026-03-19 16:57:58.001] [4106] [HailoRT] [error] [shared_resource_manager.hpp:81] [register_resource] CHECK_SUCCESS failed with status=HAILO_OUT_OF_PHYSICAL_DEVICES(74)
+[2026-03-19 16:57:58.001] [4106] [HailoRT] [error] [vdevice.cpp:133] [create] CHECK_SUCCESS failed with status=HAILO_OUT_OF_PHYSICAL_DEVICES(74)
+[2026-03-19 16:57:58.001] [4106] [HailoRT] [error] [vdevice.cpp:567] [create] CHECK_SUCCESS failed with status=HAILO_OUT_OF_PHYSICAL_DEVICES(74)

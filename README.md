@@ -155,7 +155,7 @@ These image-space errors represent how far the target is from the desired payloa
 
 - **7. Ball Release Logic**
 - **8. Closed-Loop Feadback**
-![download (2)](https://github.com/user-attachments/assets/d0143ca6-3646-4e57-8134-0c17c7f05a19)
+![drop](https://github.com/user-attachments/assets/91e98b41-7a04-44fa-ae4d-270fff151de5)
 
 ## Mission Flow
 The mission is executed as a sequence of autonomous targeting steps:
